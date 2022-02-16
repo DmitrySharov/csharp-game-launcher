@@ -21,7 +21,9 @@ namespace GameLauncher
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string rootPath;
+		private string urlZip;
+		private string versionUrl;
+		private string rootPath;
         private string versionFile;
         private string gameZip;
         private string gameExe;
@@ -57,10 +59,12 @@ namespace GameLauncher
         {
             InitializeComponent();
 
+            urlZip = "https://rrdevstorageaccount.blob.core.windows.net/nss-story-assets/Files/Build.zip";
+            versionUrl = "https://drive.google.com/uc?export=download&id=1CYXpWq5lfHWOC-RjaXVEYnezieO9olYz";
             rootPath = Directory.GetCurrentDirectory();
             versionFile = Path.Combine(rootPath, "Version.txt");
             gameZip = Path.Combine(rootPath, "Build.zip");
-            gameExe = Path.Combine(rootPath, "Build", "Pirate Game.exe");
+            gameExe = Path.Combine(rootPath, "Build", "Berserk.exe");
         }
 
         private void CheckForUpdates()
@@ -73,7 +77,7 @@ namespace GameLauncher
                 try
                 {
                     WebClient webClient = new WebClient();
-                    Version onlineVersion = new Version(webClient.DownloadString("https://drive.google.com/uc?export=download&id=1R3GT_VINzmNoXKtvnvuJw6C86-k3Jr5s"));
+                    Version onlineVersion = new Version(webClient.DownloadString(versionUrl));
 
                     if (onlineVersion.IsDifferentThan(localVersion))
                     {
@@ -108,11 +112,11 @@ namespace GameLauncher
                 else
                 {
                     Status = LauncherStatus.downloadingGame;
-                    _onlineVersion = new Version(webClient.DownloadString("https://drive.google.com/uc?export=download&id=1R3GT_VINzmNoXKtvnvuJw6C86-k3Jr5s"));
+                    _onlineVersion = new Version(webClient.DownloadString(versionUrl));
                 }
 
                 webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadGameCompletedCallback);
-                webClient.DownloadFileAsync(new Uri("https://drive.google.com/uc?export=download&id=1SNA_3P5wVp4tZi5NKhiGAAD6q4ilbaaf"), gameZip, _onlineVersion);
+                webClient.DownloadFileAsync(new Uri(urlZip), gameZip, _onlineVersion);
             }
             catch (Exception ex)
             {
